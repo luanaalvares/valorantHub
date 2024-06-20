@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post,Put, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CharacterService } from './character.service';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
@@ -18,17 +18,19 @@ export class CharacterController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.characterService.findOne(+id);
+  async findOne(@Param('id') id: string){
+    return await this.characterService.findOneById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCharacterDto: UpdateCharacterDto) {
-    return this.characterService.update(+id, updateCharacterDto);
+  ////
+  @Put()
+  async update(@Body() updateCharacterDto: UpdateCharacterDto) {
+    return await this.characterService.update(updateCharacterDto);
   }
 
+  ////
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.characterService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.characterService.delete(id);
   }
 }

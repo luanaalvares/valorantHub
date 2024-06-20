@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -47,15 +47,21 @@ export class CharacterService {
     return await this.characterModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} character`;
+  async update(updateCharacterDto): Promise<Character> {
+    return await this.characterModel.findByIdAndUpdate(updateCharacterDto.id, updateCharacterDto, {new: true});
   }
 
-  update(id: number, updateCharacterDto: UpdateCharacterDto) {
-    return `This action updates a #${id} character`;
+  ////
+  async delete(id: string): Promise<Character> {
+    return await this.characterModel.findByIdAndDelete(id);
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} character`;
+  
+  async findOneById(id: string): Promise<Character> {
+    const character = await this.characterModel.findById(id);
+    if (!character) {
+      throw new NotFoundException('User ID not found');
+    }
+    return character;
   }
+  
 }
