@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -13,12 +13,14 @@ export class CharacterService {
     private readonly httpService: HttpService
   ) { }
 
-  create(createCharacterDto: CreateCharacterDto) {
-    return 'This action adds a new character';
+  async create(createCharacterDto: CreateCharacterDto): Promise<Character> {
+    const createdCharacter = new this.characterModel(createCharacterDto);
+    return createdCharacter.save()
   }
 
   async findAll() {
-    var hasCharacters = await this.characterModel.exists({});
+    try {
+      var hasCharacters = await this.characterModel.exists({});
     if (!hasCharacters) {
       //will fetch from valorant api if database is empty, please check the api docs.
       var request = await this.httpService.get('https://valorant-api.com/v1/agents?isPlayableCharacter=true').toPromise()
@@ -44,24 +46,41 @@ export class CharacterService {
         await newCharacterModel.save()
       })
     }
-    return await this.characterModel.find();
+    return await this.characterModel.find();  
+    } catch (error) {
+      throw new InternalServerErrorException("Something wrong happened")
+    }
+    
   }
 
   async update(updateCharacterDto): Promise<Character> {
-    return await this.characterModel.findByIdAndUpdate(updateCharacterDto.id, updateCharacterDto, {new: true});
+    try {
+      return await this.characterModel.findByIdAndUpdate(updateCharacterDto.id, updateCharacterDto, {new: true});
+    } catch (error) {
+      throw new InternalServerErrorException("Something wrong happened.")
+    }
   }
 
   ////
   async delete(id: string): Promise<Character> {
-    return await this.characterModel.findByIdAndDelete(id);
+    try {
+      return await this.characterModel.findByIdAndDelete(id);
+    } catch (error) {
+      throw new InternalServerErrorException("Something wrong happened.")
+    }
   }
   
   async findOneById(id: string): Promise<Character> {
-    const character = await this.characterModel.findById(id);
+    try {
+      const character = await this.characterModel.findById(id);
     if (!character) {
       throw new NotFoundException('User ID not found');
     }
-    return character;   
+    return character;  
+    } catch (error) {
+      throw new InternalServerErrorException("Something wrong happened.")
+    }
+       
   }
   
 }

@@ -2,14 +2,18 @@ import { Controller, Get, Post,Put, Body, Patch, Param, Delete } from '@nestjs/c
 import { CharacterService } from './character.service';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
+import { CharacterException } from './character.exception';
 
 @Controller('character')
 export class CharacterController {
   constructor(private readonly characterService: CharacterService) {}
 
   @Post()
-  create(@Body() createCharacterDto: CreateCharacterDto) {
-    return this.characterService.create(createCharacterDto);
+  async create(@Body() createCharacterDto: CreateCharacterDto) {
+    if(createCharacterDto.displayName === 'Eminem')
+      throw new CharacterException()
+    this.characterService.create(createCharacterDto);
+    return 'Este personagem foi criado'
   }
 
   @Get()
