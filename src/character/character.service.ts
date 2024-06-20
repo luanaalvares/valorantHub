@@ -61,7 +61,7 @@ export class CharacterService {
     if (!character) {
       throw new NotFoundException('User ID not found');
     }
-    return character;
+    return character;   
   }
   
 }
