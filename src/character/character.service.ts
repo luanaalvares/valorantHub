@@ -74,7 +74,7 @@ export class CharacterService {
     try {
       const character = await this.characterModel.findById(id);
     if (!character) {
-      throw new NotFoundException('User ID not found');
+      throw new NotFoundException('Character ID not found');
     }
     return character;  
     } catch (error) {
