@@ -10,7 +10,7 @@ export class UserService {
 
   constructor(
     @InjectModel(User.name) private userModel: Model<User>
-  ){}
+  ) { }
 
   create(createUserDto: CreateUserDto) {
     const createdCharacter = new this.userModel(createUserDto);
@@ -18,16 +18,28 @@ export class UserService {
   }
 
   async findAll() {
-    return await this.userModel.find(); 
+    return await this.userModel.find();
   }
 
   async findOne(id: string) {
     try {
       const user = await this.userModel.findById(id);
-    if (!user) {
-      throw new NotFoundException('User ID not found');
+      if (!user) {
+        throw new NotFoundException('User ID not found');
+      }
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException("Something wrong happened.")
     }
-    return user;  
+  }
+
+  async findByEmail(email: string) {
+    try {
+      const user = await this.userModel.findOne({ email: email });
+      if (!user) {
+        throw new NotFoundException('User email not found');
+      }
+      return user;
     } catch (error) {
       throw new InternalServerErrorException("Something wrong happened.")
     }
@@ -35,7 +47,7 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      return await this.userModel.findByIdAndUpdate(id, updateUserDto, {new: true});
+      return await this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true });
     } catch (error) {
       throw new InternalServerErrorException("Something wrong happened.")
     }
