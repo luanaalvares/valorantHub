@@ -1,11 +1,13 @@
-import { Controller, Get, Post,Put, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post,Put, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CharacterService } from './character.service';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { CharacterException } from './character.exception';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { LoggingInterceptor } from 'src/logging.interceptor';
 
 @Controller('character')
+@UseInterceptors(LoggingInterceptor)
 export class CharacterController {
   constructor(private readonly characterService: CharacterService) {}
 
