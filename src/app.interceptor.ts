@@ -2,8 +2,8 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { InjectModel } from '@nestjs/mongoose';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { errorLog } from './error/errorLog.model';
 import { Model } from 'mongoose';
+import { errorLog } from './error/schema/errorLog.schema';
 
 @Injectable()
 export class AppInterceptor implements NestInterceptor {
@@ -24,7 +24,7 @@ export class AppInterceptor implements NestInterceptor {
         const route = request.route.path
 
         this.errorLogModel.create({
-          errorDate: Date.now,
+          errorDate: Date.now(),
           errorRoute: route,
           error: err
         })
