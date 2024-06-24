@@ -4,10 +4,10 @@ import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { CharacterException } from './character.exception';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { LoggingInterceptor } from 'src/logging.interceptor';
+import { AppInterceptor } from 'src/app.interceptor';
 
 @Controller('character')
-@UseInterceptors(LoggingInterceptor)
+@UseInterceptors(AppInterceptor)
 export class CharacterController {
   constructor(private readonly characterService: CharacterService) {}
 
